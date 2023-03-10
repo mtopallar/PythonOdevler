@@ -1,0 +1,31 @@
+-Python'da Veri Tipleri-
+Python'da veri tipleri değişken tanımlandığı an aslında otomatik olarak atanır. Ancak bunu manuel olarak belirtmek ya da tip dönüşümleri yapmak mümkündür. Bir değişkenin tipini type(değişken) ifadesi ile tespit etmek mümkündür.
+
+Python'da varsayılan olarak tanımlanmış veri tipleri şunlardır:
+
+Metinsel veri tipleri : str
+
+Numerik (sayısal) veri tipleri : int, float, complex
+    -int, tam sayı değer tutar
+    -float, tam sayı veya küsüratlı değerleri tutar,
+    - complex, matematikteki karmaşık sayıların Python'daki karşılığıdır. a+b i şeklinde ifade edilen veriye karşılık gelir. Burada a, sayının gerçel, b sanal kısmını ifade ederken i √−1 anlamındadır. Pythonda bu ifade i yerine j ile ifade edilir bu yüzden a+b j şeklinde formülize edilir.
+
+Dizi (Seri) veri tipleri : list, tuplu, range
+    -list, aynı veya farklı tiplerde veri veya verileri tek bir değişkende tutmak için kullanılan veri tipidir. [] kullanarak tanımlanırlar. Liste öğeleri indexlidir ve index 0 dan başlar.
+    -tuple, liste ile aynı amaçla kullanılır. () ile tanımlanır, sıralanabilir ancak değiştirilemez.
+    -range, bir fonksiyon olarak çalışır. Genellikle döngülerde dönme sayısının aralığını belirtme gibi görevlerle kullanılır.
+
+Haritalama (Mapping) veri tipi : dict
+    -dict, bir çok programlama dilinde örneği bulunan bir veri tipidir. dictionary olarak da bilinir, içinde anahtar / değer ikilemleri tutar.
+
+Atama veri tipleri : set, frozenset
+    -set, Python da {} ile tanımlanan küme olarak bilinen değişken tipleri vardır. Kümelerin özellikle bir sıralama yapılmaması durumunda her çağırılışında küme içi rastgele sıralanacaktır. İlgili kümeye set(kumeAdi) uygulandığında küme içindeki veriler sıralı bir şekilde gelir. Set kümeleri değiştirilebilir yapıdadır.
+    -forozenset, içeriğine müdahale edilemeyen kümeler oluşturmak için kullanılır.
+
+Mantıksal veri tipleri : bool
+    Bool veri tipi yine bir çok yazılım dilinde mevcuttur. Mantıksal veri tipidir ve True veya False değerini alarak karar verme aşamasında yardımcı olurlar.
+
+Binary (ikili) veri tipleri : bytes, bytearray, memoryview
+    -bytes, bilindiği üzere temelde 0 ve 1 değerini ifade eder. Python için Bytes veri tipi, kendi içerisinde bir fonksiyon şeklinde kullanılmaktadır. Bytes, verilmiş olan boyutta ve girilen verilerle başlatılan değişmez bir bayt nesnesini kendi içerisinde döndürür. veri = bytes(girilenVeri, 'utf-8') şeklinde tanımlananır.
+    -bytearray, byte şeklinde oluşturulan veri üzerinde değişiklikler yapmak için kullanılır.
+    -memoryview, Python'da bellek durumunu görüntülemek için kullanılan veri tipidir.

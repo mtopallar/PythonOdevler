@@ -1,0 +1,12 @@
+Kodlama.io Sitesindeki Değişkenler
+
+kodlama.io sitesinde;
+    - Kurs isimleri veri tabanından gelen string tipinde,
+    - Eğitmen isimleri veri tabanından gelen string tipinde,
+    - Eğitmen ve kurs resimleri veri tabanından gelen string tipinde,
+    - Profilim veya Giriş Yap butonu şarta bağlı görünecek şekilde boolean tipinde,
+    - Kurs detayları veya kursa kaydol butonu şarta bağlı boolean tipinde,
+    - Kurs tamamlanma yüzdesi int tipinde,
+    - Yorum sayısı int tipinde,
+    - Kategori ve Eğitmen açılır kutularındaki elemanlar list tipinde,
+    tasarlanmış olabilir.
