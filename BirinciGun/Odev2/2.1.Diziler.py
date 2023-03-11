@@ -1,1 +1,0 @@
-krediler = ["Hızlı Kredi","Maaşını Halkbank'tan Alanlara Özel","Mutlu Emekli İhtiyaç Kredisi"]
