@@ -49,7 +49,7 @@ def checkStudentNameIfItIsEmpty(studentName):
         return True
 
 def checkStudentListIfItIsEmpty(listToCheck):
-    if listToCheck.count == 0:
+    if len(listToCheck) == 0:
         print("Boş liste ile işlem yapılamaz.")
         return False
     else:
