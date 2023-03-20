@@ -1,0 +1,53 @@
+Seleniumda Kullanılan HTML Locatorları
+Selenium kullanırken HTML elementlerimize ulaşmak için çeşitli locator (konumlandırıcılar) kullanırız. Bu konumlandırıcılar HTML öğemizin property (özellik) lerinden biri olabileceği gibi, ilgili elementin hiyerarşik düzeyde tam konumunu kullanmak da olabilir. locator kullanırken mümkün olduğunca id veya name gibi HTML sayfası boyunca her eleman için bir kere yani işsiz olarak üretilen özelliklerin kullanılması istenir. Selenium ile kullanabileceğimiz locatorlar;
+    - ID
+    - XPATH
+    - LINK_TEXT (Sadece a etiketi için)
+    - PARTIAL_LINK_TEXT (Sadece a etiketi için)
+    - NAME
+    - TAG_NAME
+    - CLASS_NAME ve
+    - CSS_SELECTOR locatorlarıdır. Daha detaylı inceleyecek olursak;
+
+    ID
+    Yukarıda da kısaca değindiğimiz üzere, id her HTML elementi için eşsiz bir değerdir ve istenen konuma direk ulaşmayı sağlar. Selenium web driverının driver isimli değişkene atandığını varsayarsak ve kolay kullanım için by sınıfının By adıyla import edildiğini varsayarsak (ki bu kolay kullanım için gereklidir ancak bu import yapılmadan da selenium u kullanmak mümkündür);
+        -driver.findElement(By.ID,"aranacak id değeri") şeklinde kullanılır.
+
+    XPATH
+    Yine yukarıda değindiğimiz bir HTML öğesinin hiyerarşik konumu XPATH ile ifade edilir. XPATH; Full XPATH veya sadece XPATH olmak üzere iki türdür. Full XPATH, ilgili elemente <html> etiketinden itibaren konumlandırma yaparken direk XPATH ilgili elemente en yakın, unique özelliği olan bir alandan başlayarak adresleme yapar. XPATH locatorları güvenli sayılabilir ancak siteye yapılacak bir etiket ekleme ya da çıkarma işleminde XPATH adresi değişebileceği için bu durum dikkate alınmalıdır.
+        -driver.findElemen(By.XPATH,"ilgili elementin xpath adresi") şeklinde kullanılırlar.
+    Burada iki noktaya açıklık getirmeliyiz; birincisi XPATH ister full ister normal olsun, By.XPATH locator ı ile kullanılır. İkinci nokta, XPATH metinsel bir ifadedir ve metinsel ifadeler tırnak işaretleri içinde yazılır. Tırnak içine yerleştirilen XPATH ler kendi içinde tırnak işareti barındırıyorsa, metnin bütünlüğünün bozulmaması için tornak işaretlerininin düzenlenmesi gerekebilir.
+    Son olarak XPATH'e genellikle ilgili tarayıcının "DevTools" kısmından kolaylıkla erişilir. Tek tek elle yazmak gerekmez. Kullanılacak olan XPATH id gibi eşsiz özelliklere sahipse, //tagname[@Attribute=’value’] şeklinde de kullanılabilir. Aynı yöntemle ilgili elementin eşsiz olup olmadığı da sorgulanabilir. Tarayıcıda DevTools açıkken Elements sekmesinde ctrl + f ile arama çubuğu etkinleştirilip //tagname[@Attribute=’value’] ile ilgili elemente ulaşılabilir, eşleşme sayısından seçilen locator ın eşsiz olup olmadığı kontrol edilebilir.
+
+    LINK_TEXT
+    Link text bir HTML linkinin kullanıcıya görünen yüzüdür. Yani kullanıcıya "Buraya Tıklayın" şeklinde görünen metin link text alanıdır. Örnek vermek gerekirse;
+        <a href="https://www.google.com">Tıklayın</a> şeklinde bir elemente LINK_TEXT locator ile ulaşmak istersek;
+        driver.findElement(By.LINK_TEXT,"Tıklayın") olarak kullanılmalıdır.
+    
+    PARTIAL_LINK_TEXT
+    Kullanım mantığı bir yukarıdaki LINK_TEXT ile aynıdır. Bunun ondan farkı, link text öğesinin herhangi bir kelimesi ile kısmi olarak eşleşme yapabilmesidir. Mesela;
+        <a href="https://www.google.com">Google İçin Tıklayın</a> şeklindeki bir elemente PARTIAL_LINK_TEXT ile ulaşmak istesek "Google İçin Tıklayın" kelimelerinden birisi ile arama yapmak yeterli olacaktır. Bunun için ister "Google" ister "İçin" istersek de "Tıklayın" kelimelerini kullanabiliriz. Tabi bu yöntemi kullanırken başka bir eşleşme olup olmadığını dikkate almamız gerekir.
+    
+    NAME
+    İlgili HTML elementi name propertysi (özelliği) içeriyorsa bu locator ı kullanabiliriz. Name alanı da (özellikle form alanları için) id alanı gibi güvenilir seçicilerdendir.
+
+    TAG_NAME
+    İlgili HTML etiketine etiketin kendi adı ile ulaşmak için kullanılır. Ancak çoğu zaman birden fazla sonuç döneceği için çok spesifik bir seçici değildir.
+        driver.findElement(By.TAG_NAME,"aranacak etiket") şeklinde kullanılabilir.
+    
+    CLASS_NAME
+    İlgili HTML elementinin sahip olduğu class adı kullanılarak elementin yakalanması için kullanılan seçicidir. Class isimleri de birden fazla kere kullanılabileceği için çok spesifik bir seçici değildir.
+        driver.findElement(By.CLASS_NAME,"aranan class adı") şeklinde kullanılabilir.
+    
+    CSS_SELECTOR
+    CSS_SELECTOR bir HTML elementinin CSS özelliklerinden faydalanarak elemente ulaşmak için kullanılan locator türüdür. CSS kendi içinde farklı yaplar barındırdığından CSS_SELECTOR'de kendi içinde alt başlıklara sahiptir.
+        - Tag ve ID,
+        - Tag ve Class,
+        - Tag ve Attribute,
+        - Tag, Class ve Attribute,
+        - Matches (eşleşme yöntemi ile) ve
+            -Starts with,
+            -Ends with,
+            -Contains
+        - Child elementler (hiyerarşik düzen)
+    şeklinde özetlenebilir.

@@ -1,0 +1,18 @@
+Selenium'daki Sık Kullanılan Metodlar (Aksiyonlar):
+
+click() => ulaşılan elemente mouse ile tıklama yapılması olayını taklit eder.
+submit() => özellikle form yapılarında form verisinin gönderilmesi için kullanılan komuttur.
+clear() => metin girişi yapılabilen elementlerde element içindeki metni temizler.
+get_property() => ilgili elementin istenilen özelliği taşıyıp taşımadığı bilgisini öğrenmek için kullanılır.
+get_dom_attributes() => ilgili elementin istenilen özelliğin değerini almak için kullanılır.
+get_attributes() => bu fonksiyon ilk olarak verilen özelliğin ismini döndürmeye çalışır. 
+    Bu ada sahip bir özellik bulunamazsa, verilen ada ait özniteliğin değerini döndürmeyi dener. Eğer ona da erişemez ise "none" değeri döndürür.
+is_selected() => bu fonksiyon ilgili elementin seçili durumda olup olmadığına bakar.
+is_enabled() => ilgili elementin enable yani erişilebilir durumda olup olmadığına bakar.
+send_keys() => bu fonksiyon input gibi metin gibilebilen alanlara belirttiğimiz metnin girilmesini sağlar.
+is_displayed() => ilgili elementin kullanıcı tarafından görüntülenebilir olup olmadığına bakar.
+screenshot() => verilen adrese .png uzantısıyla bir ekran görüntüsü almamızı sağlayan fonksiyondur.
+_execute() => verilen komutun çalıştırılması için kullanılır.
+find_element() => istenilen bir özelliğe göre ilgili elementi HTML içinde bulmaya çalışan metoddur.
+find_elements() => find_element ile aynı işi yapar. Ancak find_element aranan özellikler ile eşleşen ilk elementi yani tek bir elementi geri 
+    döndürürken, find_elements eşleşmenin sağlandığı tüm elementleri liste şeklinde döndürür.
