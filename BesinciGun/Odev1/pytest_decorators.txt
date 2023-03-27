@@ -1,0 +1,1 @@
+Pytest'deki decoratörler repository'nin readme dosyası aracılığı ile paylaşıldı. İlgili dosyaya repository'nin ana dizininden erişilebilir.
