@@ -10,7 +10,7 @@ Numerik (sayısal) veri tipleri : int, float, complex
     -float, tam sayı veya küsüratlı değerleri tutar,
     - complex, matematikteki karmaşık sayıların Python'daki karşılığıdır. a+b i şeklinde ifade edilen veriye karşılık gelir. Burada a, sayının gerçel, b sanal kısmını ifade ederken i √−1 anlamındadır. Pythonda bu ifade i yerine j ile ifade edilir bu yüzden a+b j şeklinde formülize edilir.
 
-Dizi (Seri) veri tipleri : list, tuplu, range
+Dizi (Seri) veri tipleri : list, tuple, range
     -list, aynı veya farklı tiplerde veri veya verileri tek bir değişkende tutmak için kullanılan veri tipidir. [] kullanarak tanımlanırlar. Liste öğeleri indexlidir ve index 0 dan başlar.
     -tuple, liste ile aynı amaçla kullanılır. () ile tanımlanır, sıralanabilir ancak değiştirilemez.
     -range, bir fonksiyon olarak çalışır. Genellikle döngülerde dönme sayısının aralığını belirtme gibi görevlerle kullanılır.

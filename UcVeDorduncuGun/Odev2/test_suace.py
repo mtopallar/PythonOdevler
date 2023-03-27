@@ -3,7 +3,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 from selenium.webdriver.common.by import By
 
-class TestSuace:
+class Test_Suace:
     
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.maximize_window()
@@ -86,5 +86,5 @@ class TestSuace:
         countOfProducts = self.driver.find_elements(By.CLASS_NAME,"inventory_item")
         print(f"Count of products test passed: {len(countOfProducts) == 6}")
 
-testSouce = TestSuace()
+testSouce = Test_Suace()
 testSouce.checkCountOfProducts()
