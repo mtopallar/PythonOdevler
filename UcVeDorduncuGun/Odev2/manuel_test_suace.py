@@ -3,9 +3,12 @@ from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 from selenium.webdriver.common.by import By
 
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.common.exceptions import NoSuchElementException
+
 class Manuel_Test_Suace:
     
-    #test_sauce olan doysa ismi, pytest de görünmemesi için manuel_test_suace olarak değiştirildi.
+    # test_sauce olan doysa ismi, pytest de görünmemesi için manuel_test_suace olarak değiştirildi.
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.maximize_window()
     
@@ -50,24 +53,23 @@ class Manuel_Test_Suace:
         sleep(3)
     
     def checkFormValidationIcons(self):
+        
+        #kullanici adı ve parola boş girildiğinde validasyon hatasını gösteren X işaretleri çıkmalı, hata mesajındaki kapat butonuna basıldığında validasyon işaretleri kaybolmalı.
+        
         self.checkUserNameAndPasswordIsEmpty()
-        inputUserName = self.driver.find_element(By.ID,"user-name")
-        userNameErrorClass = inputUserName.get_attribute("class")
+        userNameError = self.driver.find_element(By.CSS_SELECTOR, ".form_group:nth-child(1) > .svg-inline--fa")
+        passwordError = self.driver.find_element(By.CSS_SELECTOR, ".form_group:nth-child(2) > .svg-inline--fa")        
+        result = (userNameError.is_displayed() and passwordError.is_displayed()) == True
+        print(f"X icons displayed? {result}")
 
-        inputPassword = self.driver.find_element(By.ID,"password")
-        passwordErrorClass = inputPassword.get_attribute("class")
-
-        validateErrorClasses = userNameErrorClass and passwordErrorClass == "input_error form_input error" 
-        print(f"Validation failed icons displayed: {validateErrorClasses}")
-        sleep(3)
-        clearErrorButton = self.driver.find_element(By.XPATH,"//*[@id='login_button_container']/div/form/div[3]/h3/button")
-        clearErrorButton.click()        
-       
-        classUserName = inputUserName.get_attribute("class")      
-        classPassword = inputPassword.get_attribute("class") 
-        isCleared =  classUserName and classPassword == "input_error form_input"
-        print(f"Validation errors cleared: {isCleared}")       
-        sleep(3)
+        clearErrorButton = self.driver.find_element(By.XPATH,"//*[@id='login_button_container']/div/form/div[3]/h3/button")        
+        clearErrorButton.click()   
+        sleep(2)
+        
+        userNameError = self.check_element_exists_by_locator(By.CSS_SELECTOR, ".form_group:nth-child(1) > .svg-inline--fa")
+        passwordError = self.check_element_exists_by_locator(By.CSS_SELECTOR, ".form_group:nth-child(2) > .svg-inline--fa")
+        resultCleared = (userNameError and passwordError) == False
+        print(f"X icons cleared? {resultCleared}")
     
     def checkValidLogin(self):
         self.connectSite()
@@ -87,5 +89,14 @@ class Manuel_Test_Suace:
         countOfProducts = self.driver.find_elements(By.CLASS_NAME,"inventory_item")
         print(f"Count of products test passed: {len(countOfProducts) == 6}")
 
+    #Helper Mothods
+    def check_element_exists_by_locator(self,by,locator):
+        try:
+            self.driver.find_element(by, locator)
+        except NoSuchElementException:
+            return False
+        return True
+
 testSouce = Manuel_Test_Suace()
 testSouce.checkCountOfProducts()
+

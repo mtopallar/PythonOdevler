@@ -2,13 +2,13 @@
 ### Pytest'de Anotasyonlar (Decoratörler)
 Anotasyonlar birçok yazılım dilinde mevcuttur ve üzerlerine yazıldıkları nesneye çeşitli özellikler kazandırmak, onlara nitelik katmak için kullanılırlar. Pytest içerisinde bulunan mark modülü içinde kullanabileceğimiz bazı hazır anotasyonlar mevcuttur. Bunlar:
 
--pytest.mark.filterwarnings
--pytest.mark.parametrize
--pytest.mark.skip
--pytest.mark.skipif
--pytest.mark.usefixtures
--pytest.mark.xfail
--Custom marks
+- pytest.mark.filterwarnings
+- pytest.mark.parametrize
+- pytest.mark.skip
+- pytest.mark.skipif
+- pytest.mark.usefixtures
+- pytest.mark.xfail
+- Custom marks
 
 #### -pytest.mark.filterwarnings(filter)
 Pytest'in web sitesinde ilgili anotasyon için aşağıdaki açıklama mevcuttur:
@@ -47,15 +47,17 @@ Bu dekoratör daha önceden fixture olarak işaretlenmiş bir yapıyı (örneği
 ```python
 @pytest.fixture
 def cleandir():
-    #içeriğinin temizlenmesi istenen direction ile ilgili kodlar
+    # içeriğinin temizlenmesi istenen direction ile ilgili kodlar
 ```
 
 ```python
 @pytest.mark.usefixtures("cleandir")
 class TestClass:
     def test_methodu(self):
-       #Bir yukarıda tanımlanan ve fixture olarak işaretlenen metodu, buradaki test metodumuz koşulurken kullanabilmek için .usefixtures 
-       # anotasyonunu kullandık ve anotasyon içine fixture olan metodumuzun adını verdik: @pytest.mark.usefixtures("cleandir")
+       # Bir yukarıda tanımlanan ve fixture olarak işaretlenen metodu, 
+       # buradaki test metodumuz koşulurken kullanabilmek için .usefixtures 
+       # anotasyonunu kullandık ve anotasyon içine fixture olan metodumuzun adını 
+       # verdik: @pytest.mark.usefixtures("cleandir")
 ```
 
 #### -pytest.mark.xfail
