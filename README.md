@@ -65,3 +65,6 @@ Bir test işleminden "başarısız sonuç beklediğimizi" belirtmek için bu ano
 
 #### Custom marks
 Custom marks ise kendi anotasyonlarımızı oluşturup kullanmak istediğimizde başvuracağımız bir yapıdır. Genel anlamda pytest.mark objesi yardımı ile dinamik olarak oluşturulur ve kullanılır.
+
+### 5.Gün Testing Area Görseli
+![](https://github.com/mtopallar/PythonOdevler/blob/master/BesinciGun/Odev2/testing_area.jpg)
