@@ -1,5 +1,4 @@
 import random
-from time import sleep
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
@@ -10,25 +9,26 @@ import pytest
 from data import dataGetter
 from pathlib import Path
 from datetime import date
+import pathlib
+import os
 
 """
 Senaryolar:
-1) Hatalı kullanıcı adı ve parola kombinasyonu ile veya boş bırakılan veri ile giriş yapılamadığını doğrula => ok
-2) Doğru kullanıcı adı ve giriş ile giriş yapılabildiğini doğrula => ok
-3) Sandwich menüden logOut butonunu doğrula => ok
-4) Flitre öğelerinin çalıştığını doğrula => ok
-    -A to Z => ok
-    -Z to A => ok
-    -Low to high => ok
-    -High to Low => ok
-5) Her bir öğenin resmine tıklandığında detay sayfasına gittiğini doğrula => //*[@id="item_0_img_link"] => ok
-6) Her bir öğenin başlığına tıklandığıda detay sayfasına gittiğini doğrula. => //*[@id="item_0_title_link"] => ok
-                                                        https://www.saucedemo.com/inventory-item.html?id=0
-7) Add to cart çalışmasını doğrula => ok
-8) Remove butonunun çalışmasını doğrula => ok
-9) Checkout işlemi öncesi information kısmının boş geçilemediğini onayla => ok
-10) Toplam fiyatın doğru hesaplandığını test et (Kdv %8 ve mesela 16.4476 16.45 e yuvarlanıyor.) => ok
-11) Alışverişi tamamla.
+1) Hatalı kullanıcı adı ve parola kombinasyonu ile veya boş bırakılan veri ile giriş yapılamadığını doğrula
+2) Doğru kullanıcı adı ve giriş ile giriş yapılabildiğini doğrula
+3) Sandwich menüden logOut butonunu doğrula
+4) Flitre öğelerinin çalıştığını doğrula
+    -A to Z
+    -Z to A
+    -low to high
+    -high to low
+5) Her bir öğenin resmine tıklandığında detay sayfasına gittiğini doğrula
+6) Her bir öğenin başlığına tıklandığıda detay sayfasına gittiğini doğrula.
+7) Add to cart butonunun çalışmasını doğrula
+8) Remove butonunun çalışmasını doğrula
+9) Checkout işlemi öncesi information kısmının boş geçilemediğini doğrula
+10) Toplam verginin ve vergi dahil fiyatın doğru hesaplandığını doğrula
+11) Baştan sonra bir alışverişin tamamlandığını doğrula.
 """
 class Test_Sauce:
 
@@ -43,9 +43,11 @@ class Test_Sauce:
         self.driver.get(testUrl)
         self.userNameInput = self.getElementByLocator(By.ID,userNameInputId)
         self.passwordInput = self.getElementByLocator(By.ID,passwordInputId)
-        self.loginButton = self.getElementByLocator(By.ID,loginButtonId)
-        # self.folderPath = str(date.today().strftime('%d-%m-%Y'))
-        # Path(self.folderPath).mkdir(exist_ok=True)        
+        self.loginButton = self.getElementByLocator(By.ID,loginButtonId)        
+        path = pathlib.Path(__file__).parent.resolve()    
+        os.chdir(f"{path}")
+        self.folderPath = str(date.today().strftime('%d-%m-%Y'))
+        Path(self.folderPath).mkdir(exist_ok=True)        
     
     def teardown_method(self):
         self.driver.quit()  
@@ -63,29 +65,39 @@ class Test_Sauce:
 
     @pytest.mark.parametrize("username,password",getInvalidLoginData())
     def test_invalidLogin(self,username,password):
+       """
+       Hatalı kullanıcı adı ve parola kombinasyonu ile giriş yapılamadığını test eden metod.
+       """
        self.userNameInput.send_keys(username)
        self.passwordInput.send_keys(password)
        self.loginButton.click()
        userNameError = self.checkElementExistsByLocator(By.CSS_SELECTOR, ".form_group:nth-child(1) > .svg-inline--fa")
        passwordError = self.checkElementExistsByLocator(By.CSS_SELECTOR, ".form_group:nth-child(2) > .svg-inline--fa")
        errorMessageDiv = self.getElementByLocator(By.XPATH,"//*[@id='login_button_container']/div/form/div[3]")
+       self.takeAScreenShot("test_invalidLogin",f"usr={username}_psw={password}.png")
        if (userNameError and passwordError) and errorMessageDiv.is_displayed():
            assert True
        else:
            assert False
 
-    def test_validLogin(self):        
+    def test_validLogin(self):
+        """
+        Doğru kullanıcı adı ve parola ile giriş yapılabildiğini test eden metod.
+        """        
         validUserName = "standard_user"
         validPassword = "secret_sauce"
         expectedUrl = "https://www.saucedemo.com/inventory.html"
         self.userNameInput.send_keys(validUserName)
         self.passwordInput.send_keys(validPassword)
         self.loginButton.click()        
-        checkUrl = self.driver.current_url
-        #self.driver.save_screenshot(f"{self.folderPath}/test_validLogin.png")
+        checkUrl = self.driver.current_url        
+        self.takeAScreenShot("test_validLogin","test_validLogin.png")
         assert checkUrl == expectedUrl        
 
-    def test_logOutFromBurgerMenu(self):    
+    def test_logOutFromBurgerMenu(self): 
+        """
+        Başarılı giriş yapıldıktan sonra sandwich menüdeki LogOut butonu ile çıkış yapılabildiğini test eden metod.
+        """   
         expectedUrl = "https://www.saucedemo.com/"     
         self.login()
         sandwichButton = self.getElementByLocator(By.ID,"react-burger-menu-btn")
@@ -93,9 +105,13 @@ class Test_Sauce:
         logOutLink = self.getElementByLocator(By.ID,"logout_sidebar_link")
         logOutLink.click()
         currentUrl = self.driver.current_url
+        self.takeAScreenShot("test_logOutFromBurgerMenu","test_logOutFromBurgerMenu.png")
         assert currentUrl == expectedUrl
 
     def test_filterNameAToZ(self):
+        """
+        Ürünleri isme göre A dan Z ye sıralayan flitrenin işlevini test eden metod.
+        """
         flag = False
         self.login()        
         filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
@@ -103,14 +119,18 @@ class Test_Sauce:
         filterMenu.click()
         filterAToZ.click()
         productNameDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_name']")
-        productNameAToZ = self.getProductNameList(productNameDivs)               
+        productNameAToZ = self.getProductNameList(productNameDivs)   
+        self.takeAScreenShot("test_filterNameAToZ","test_filterNameAToZ.png")            
         if sorted(productNameAToZ):
             flag = True
         else:
             flag = False
         assert flag
 
-    def test_filterNameZToA(self):        
+    def test_filterNameZToA(self):   
+        """
+        Ürünleri isme göre Z den A ya sıralayan flitrenin işlevini test eden metod.
+        """     
         flag = False
         self.login()
         filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
@@ -118,7 +138,8 @@ class Test_Sauce:
         filterMenu.click()
         filterZtoA.click()
         productNameDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_name']")
-        productNameZToA = self.getProductNameList(productNameDivs)              
+        productNameZToA = self.getProductNameList(productNameDivs)    
+        self.takeAScreenShot("test_filterNameZToA","test_filterNameZToA.png")          
         if sorted(productNameZToA,reverse=True):
             flag = True
         else:
@@ -126,6 +147,9 @@ class Test_Sauce:
         assert flag
     
     def test_filterPriceLowToHigh(self):
+        """
+        Ürünleri fiyatına göre düşükten dan yükseğe sıralayan flitrenin işlevini test eden metod.
+        """
         flag = False
         self.login()        
         filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
@@ -133,7 +157,8 @@ class Test_Sauce:
         filterMenu.click()
         filterPriceLowToHigh.click()
         productPricesDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_price']")
-        productPricesSortedToHigher = self.getProductPriceList(productPricesDivs)                
+        productPricesSortedToHigher = self.getProductPriceList(productPricesDivs)     
+        self.takeAScreenShot("test_filterPriceLowToHigh","test_filterPriceLowToHigh.png")           
         if sorted(productPricesSortedToHigher):
             flag = True
         else:
@@ -141,6 +166,9 @@ class Test_Sauce:
         assert flag
 
     def test_filterPriceHighToLow(self):
+        """
+        Ürünleri fiyatına göre yüksekten düşüğe sıralayan flitrenin işlevini test eden metod.
+        """
         flag = False
         self.login()        
         filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
@@ -148,7 +176,8 @@ class Test_Sauce:
         filterMenu.click()
         filterPriceHighToLow.click()
         productPricesDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_price']")
-        productPricesSortedToLower = self.getProductPriceList(productPricesDivs)              
+        productPricesSortedToLower = self.getProductPriceList(productPricesDivs)       
+        self.takeAScreenShot("test_filterPriceHighToLow","test_filterPriceHighToLow.png")       
         if sorted(productPricesSortedToLower,reverse=True):
             flag = True
         else:
@@ -156,32 +185,47 @@ class Test_Sauce:
         assert flag
 
     def test_imageGoesToProductDetail(self):
+        """
+        Rastgele bir ürün seçip bu ürünün resmine tıklandığında ürünün detay fayfasına gidilebildiğini test eden metod.
+        """
         selectRandomProduct = random.randint(0,5)
         expectedUrl = f"https://www.saucedemo.com/inventory-item.html?id={selectRandomProduct}"
         self.login()
         productImage = self.getElementByLocator(By.ID,f"item_{selectRandomProduct}_img_link")
         productImage.click()
         currentLocation = self.driver.current_url
+        self.takeAScreenShot("test_imageGoesToProductDetail","test_imageGoesToProductDetail.png")
         assert currentLocation == expectedUrl
     
     def test_titleGoesToProductDetail(self):
+        """
+        Rastgele bir ürün seçip bu ürünün başlığına tıklandığında ürünün detay fayfasına gidilebildiğini test eden metod.
+        """
         selectRandomProduct = random.randint(0,5)
         expectedUrl = f"https://www.saucedemo.com/inventory-item.html?id={selectRandomProduct}"
         self.login()
         productTitleLink = self.getElementByLocator(By.ID,f"item_{selectRandomProduct}_title_link")
         productTitleLink.click()
         currentLocation = self.driver.current_url
+        self.takeAScreenShot("test_titleGoesToProductDetail","test_titleGoesToProductDetail.png")
         assert currentLocation == expectedUrl
             
     def test_addToCartButton(self):
+        """
+        Rastgele sayıdaki ürün için Add to cart butonu tıklandığında ürünlerin sepete eklendiğini test eden metod.
+        """
         self.login()        
         buttonsToClick = len(self.randomClickToAddToCartButton())    
         cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
         cartIcon.click()
         cartItemsList = self.getElementsByLocator(By.CLASS_NAME,"cart_item")
+        self.takeAScreenShot("test_addToCartButton","test_addToCartButton.png")
         assert buttonsToClick == len(cartItemsList)   
 
     def test_removeButton(self):
+        """
+        Önceden sepete eklenmiş ürünler için Remove butonuna basıldığında ürünlerin sepetten çıkarıldığını test eden metod.
+        """
         self.login()    
         flag = False        
         addButtonsToClick = self.randomClickToAddToCartButton()
@@ -198,7 +242,8 @@ class Test_Sauce:
         if isCartItemsListExists == True:
             cartItemsList = self.getElementsByLocator(By.CLASS_NAME,"cart_item")        
         if isCartItemsListExists == False or (isCartItemsListExists == True and len(cartItemsList) == (len(addButtonsToClick) - randomRemove)):
-            flag = True        
+            flag = True 
+        self.takeAScreenShot("test_removeButton","test_removeButton.png")       
         assert flag
     
     def getInvalidCheckoutData():
@@ -215,6 +260,9 @@ class Test_Sauce:
 
     @pytest.mark.parametrize("firstName,lastName,postalCode",getInvalidCheckoutData())
     def test_checkoutDataMustBeFull(self,firstName,lastName,postalCode):
+        """
+        Ürünler sepete eklendikten sonra "Checkout: Your Information" kısmında sistemin istediği kullanıcı bilgilerinin boş geçilemediğini test eden metod. (Ürünler rastgele olarak sisteme eklenmektedir.)
+        """
         self.login()
         self.randomClickToAddToCartButton()
         cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
@@ -233,12 +281,16 @@ class Test_Sauce:
         lastNameErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,".form_group:nth-child(2) > .svg-inline--fa")
         postalCodeErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,".form_group:nth-child(3) > .svg-inline--fa")
         errorDiv = self.getElementByLocator(By.XPATH,"//*[@id='checkout_info_container']/div/form/div[1]/div[4]").is_displayed()
+        self.takeAScreenShot("test_checkoutDataMustBeFull",f"first={firstName}_last={lastName}_postal={postalCode}.png")
         if firstNameErrorIcon and lastNameErrorIcon and postalCodeErrorIcon and errorDiv:
             assert True
         else:
             assert False
     
     def test_isTotalPriceCorrect(self):
+        """
+        Rastgele sayıda sepete eklenen ürünlerin, "Checkout: Overview" ekranında toplam vergi ve vergi dahil fiyat bilgilerinin doğru hesaplandığını test eden metod.
+        """
         totalTaxTrue = False
         totalPriceTrue = False
         expectedPrice = 0
@@ -271,12 +323,16 @@ class Test_Sauce:
             totalTaxTrue = True        
         if total == (f"Total: ${formattedTotalPrice}"):
             totalPriceTrue = True
+        self.takeAScreenShot("test_isTotalPriceCorrect",f"tax={formattedTax}_tprice={formattedTotalPrice}.png")
         if totalTaxTrue and totalPriceTrue:            
             assert True
         else:
             assert False
     
     def test_completeShopping(self):
+        """
+        Baştan sona sistemden başarı ile satınalma yapılabildiğini test eden metod. (Sepete eklenen ürünler rastgele seçilmektedir.)
+        """
         expectedAdress = "https://www.saucedemo.com/checkout-complete.html"
         self.login()
         self.randomClickToAddToCartButton()
@@ -295,6 +351,7 @@ class Test_Sauce:
         finishButton = self.getElementByLocator(By.ID,"finish")
         finishButton.click()
         currentAdress = self.driver.current_url
+        self.takeAScreenShot("test_completeShopping","test_completeShopping.png")
         if expectedAdress == currentAdress:
             assert True
         else:
@@ -302,23 +359,6 @@ class Test_Sauce:
 
 
         
-
-
-
-
-
-
-
-        
-
-
-        
-        
-        
-
-            
-
-    # id ile getirilen elementleri class içinde global e taşıyabilirsin.
     #Helpers
     def waitForElementVisible(self,locator,timeout=5):
         WebDriverWait(self.driver,timeout).until(ec.visibility_of_element_located(locator))
@@ -370,4 +410,12 @@ class Test_Sauce:
             productButton.click()
         return clickedButtons
     
+    def createMethodsScreenshotFolder(self,methodName):
+        methodsPath = (f"{self.folderPath}/{methodName}")
+        Path(f"{methodsPath}").mkdir(exist_ok=True)        
+        return methodsPath
+    
+    def takeAScreenShot(self,methodName,imageName):
+        methodsPath = self.createMethodsScreenshotFolder(methodName)
+        self.driver.save_screenshot(f"{methodsPath}/{imageName}")
     
