@@ -11,6 +11,8 @@ from pathlib import Path
 from datetime import date
 import pathlib
 import os
+from time import sleep
+from math import ceil
 
 """
 Senaryolar:
@@ -86,7 +88,7 @@ class Test_Sauce:
        userNameError = self.checkElementExistsByLocator(By.CSS_SELECTOR, userNameErrorCSSSelector)
        passwordError = self.checkElementExistsByLocator(By.CSS_SELECTOR, passwordErrorCSSSelector)
        errorMessageDiv = self.getElementByLocator(By.XPATH,errorMessageDivXpath)
-       self.takeAScreenShot("test_invalidLogin",f"usr={username}_psw={password}.png")
+       self.takeAScreenShot("test_invalidLogin",f"usr={username}_psw={password}")
        if (userNameError and passwordError) and errorMessageDiv.is_displayed():
            assert True
        else:
@@ -104,7 +106,7 @@ class Test_Sauce:
         self.passwordInput.send_keys(validPassword)
         self.loginButton.click()        
         checkUrl = self.driver.current_url        
-        self.takeAScreenShot("test_validLogin","test_validLogin.png")
+        self.takeAScreenShot("test_validLogin","test_validLogin")
         assert checkUrl == expectedUrl        
 
     def test_logOutFromBurgerMenu(self): 
@@ -121,7 +123,7 @@ class Test_Sauce:
         logOutLink = self.getElementByLocator(By.ID,logOutLinkId)
         logOutLink.click()
         currentUrl = self.driver.current_url
-        self.takeAScreenShot("test_logOutFromBurgerMenu","test_logOutFromBurgerMenu.png")
+        self.takeAScreenShot("test_logOutFromBurgerMenu","test_logOutFromBurgerMenu")
         assert currentUrl == expectedUrl
 
     def test_filterNameAToZ(self):
@@ -139,7 +141,7 @@ class Test_Sauce:
         filterAToZ.click()
         productNameDivs = self.getElementsByLocator(By.XPATH,productNameDivsXPath)
         productNameAToZ = self.getProductNameList(productNameDivs)   
-        self.takeAScreenShot("test_filterNameAToZ","test_filterNameAToZ.png")            
+        self.takeAScreenShot("test_filterNameAToZ","test_filterNameAToZ")            
         if sorted(productNameAToZ):
             flag = True
         else:
@@ -161,7 +163,7 @@ class Test_Sauce:
         filterZtoA.click()
         productNameDivs = self.getElementsByLocator(By.XPATH,productNameDivsXPath)
         productNameZToA = self.getProductNameList(productNameDivs)    
-        self.takeAScreenShot("test_filterNameZToA","test_filterNameZToA.png")          
+        self.takeAScreenShot("test_filterNameZToA","test_filterNameZToA")          
         if sorted(productNameZToA,reverse=True):
             flag = True
         else:
@@ -183,7 +185,7 @@ class Test_Sauce:
         filterPriceLowToHigh.click()
         productPricesDivs = self.getElementsByLocator(By.XPATH,productPricesDivsXPath)
         productPricesSortedToHigher = self.getProductPriceList(productPricesDivs)     
-        self.takeAScreenShot("test_filterPriceLowToHigh","test_filterPriceLowToHigh.png")           
+        self.takeAScreenShot("test_filterPriceLowToHigh","test_filterPriceLowToHigh")           
         if sorted(productPricesSortedToHigher):
             flag = True
         else:
@@ -205,7 +207,7 @@ class Test_Sauce:
         filterPriceHighToLow.click()
         productPricesDivs = self.getElementsByLocator(By.XPATH,productPricesDivsXpath)
         productPricesSortedToLower = self.getProductPriceList(productPricesDivs)       
-        self.takeAScreenShot("test_filterPriceHighToLow","test_filterPriceHighToLow.png")       
+        self.takeAScreenShot("test_filterPriceHighToLow","test_filterPriceHighToLow")       
         if sorted(productPricesSortedToLower,reverse=True):
             flag = True
         else:
@@ -223,7 +225,7 @@ class Test_Sauce:
         productImage = self.getElementByLocator(By.ID,f"item_{selectRandomProduct}_img_link")
         productImage.click()
         currentLocation = self.driver.current_url
-        self.takeAScreenShot("test_imageGoesToProductDetail","test_imageGoesToProductDetail.png")
+        self.takeAScreenShot("test_imageGoesToProductDetail","test_imageGoesToProductDetail")
         assert currentLocation == expectedUrl
     
     def test_titleGoesToProductDetail(self):
@@ -236,7 +238,7 @@ class Test_Sauce:
         productTitleLink = self.getElementByLocator(By.ID,f"item_{selectRandomProduct}_title_link")
         productTitleLink.click()
         currentLocation = self.driver.current_url
-        self.takeAScreenShot("test_titleGoesToProductDetail","test_titleGoesToProductDetail.png")
+        self.takeAScreenShot("test_titleGoesToProductDetail","test_titleGoesToProductDetail")
         assert currentLocation == expectedUrl
             
     def test_addToCartButton(self):
@@ -251,7 +253,7 @@ class Test_Sauce:
         cartIcon = self.getElementByLocator(By.CLASS_NAME,self.cartIconClassName)
         cartIcon.click()
         cartItemsList = self.getElementsByLocator(By.CLASS_NAME,cartItemsListClassName)
-        self.takeAScreenShot("test_addToCartButton","test_addToCartButton.png")
+        self.takeAScreenShot("test_addToCartButton","test_addToCartButton")
         assert buttonsToClick == len(cartItemsList)   
 
     def test_removeButton(self):
@@ -277,7 +279,7 @@ class Test_Sauce:
             cartItemsList = self.getElementsByLocator(By.CLASS_NAME,cartItemsListClassName)        
         if isCartItemsListExists == False or (isCartItemsListExists == True and len(cartItemsList) == (len(addButtonsToClick) - randomRemove)):
             flag = True 
-        self.takeAScreenShot("test_removeButton","test_removeButton.png")       
+        self.takeAScreenShot("test_removeButton","test_removeButton")       
         assert flag
     
     def getInvalidCheckoutData():
@@ -320,7 +322,7 @@ class Test_Sauce:
         lastNameErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,lastNameErrorIconCSSSelector)
         postalCodeErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,postalCodeErrorIconCSSSelector)
         errorDiv = self.getElementByLocator(By.XPATH,errorDivXPath).is_displayed()
-        self.takeAScreenShot("test_checkoutDataMustBeFull",f"first={firstName}_last={lastName}_postal={postalCode}.png")
+        self.takeAScreenShot("test_checkoutDataMustBeFull",f"first={firstName}_last={lastName}_postal={postalCode}")
         if firstNameErrorIcon and lastNameErrorIcon and postalCodeErrorIcon and errorDiv:
             assert True
         else:
@@ -369,7 +371,7 @@ class Test_Sauce:
             totalTaxTrue = True        
         if total == (f"Total: ${formattedTotalPrice}"):
             totalPriceTrue = True
-        self.takeAScreenShot("test_isTotalPriceCorrect",f"tax={formattedTax}_tprice={formattedTotalPrice}.png")
+        self.takeAScreenShot("test_isTotalPriceCorrect",f"tax={formattedTax}_tprice={formattedTotalPrice}")
         if totalTaxTrue and totalPriceTrue:            
             assert True
         else:
@@ -402,13 +404,12 @@ class Test_Sauce:
         finishButton = self.getElementByLocator(By.ID,finishButtonId)
         finishButton.click()
         currentAdress = self.driver.current_url
-        self.takeAScreenShot("test_completeShopping","test_completeShopping.png")
+        self.takeAScreenShot("test_completeShopping","test_completeShopping")
         if expectedAdress == currentAdress:
             assert True
         else:
             assert False
-
-
+            
         
     #Helpers
     def waitForElementVisible(self,locator,timeout=5):
@@ -466,8 +467,23 @@ class Test_Sauce:
         Path(f"{methodsPath}").mkdir(exist_ok=True)        
         return methodsPath
     
-    def takeAScreenShot(self,methodName,imageName):
+    def takeAScreenShot(self,methodName,imageName,extension = ".png"):
         methodsPath = self.createMethodsScreenshotFolder(methodName)
-        self.driver.save_screenshot(f"{methodsPath}/{imageName}")
+        self.scrollPageIfSiteBiggerThenWindowHeight(methodsPath,imageName,extension)
+        #self.driver.save_screenshot(f"{methodsPath}/{imageName}")
 
+    def scrollPageIfSiteBiggerThenWindowHeight(self,methodsPath,imageName,extension):
+        totalScrolledHeight = self.driver.execute_script("return window.pageYOffset + window.innerHeight")
+        pageHeight = self.driver.execute_script("return document.body.scrollHeight")
+        goDown = 0         
+        i = 0
+        while pageHeight > (totalScrolledHeight + goDown):
+            i += 1                                       
+            self.driver.execute_script(f"window.scrollTo(0,{goDown})")
+            self.driver.save_screenshot(f"{methodsPath}/{imageName}_{i}_{extension}")
+            goDown += 500                
+        else:
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")            
+            self.driver.save_screenshot(f"{methodsPath}/{imageName}{extension}")
+            
     

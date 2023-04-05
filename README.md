@@ -111,7 +111,9 @@ Belirlediğim senaryolara göre testlerimi yazdım, gerekli helper metodlarımı
 ```
 paketlerini ve yöntemini kullandım. Buradaki path değişkeni projenin klasör hiyerarşisine göre düzenlenmelidir. Bu yöntem ile pytest in bakması gerektiği yol belirtilmiş oluyor. Farklı yöntemler de mutlaka ki mevcuttur ancak ben bu yöntemi tercih ettim. Detaylı kullanım için ilgili repositorydeki kodlarımı inceleyebilirsiniz.
 
-Testlerin hepsi için ekran görüntüsü alma işlevini ekledim. Daha kontrol edilebilir bir yapı için önce o testin çalıştırıldığı günün tarihini gg-aa-yyyy şeklinde formatlayıp bunu isim olarak kullanan bir klasör oluşturduktan sonra, bu klasörün içine her metod için ilgili metod ismini isim olarak kullanan ikinci bir klasörü oluşturan ve bu ikinci klasörün içine ilgili test için istenen resimleri kaydeden bir yapı oluşturdum ve ilgili metodlarda doğru noktalarda bu yapıyı çağırdım. 
+Testlerin hepsi için ekran görüntüsü alma işlevini ekledim. Daha kontrol edilebilir bir yapı için önce o testin çalıştırıldığı günün tarihini gg-aa-yyyy şeklinde formatlayıp bunu isim olarak kullanan bir klasör oluşturduktan sonra, bu klasörün içine her metod için ilgili metod ismini isim olarak kullanan ikinci bir klasörü oluşturan ve bu ikinci klasörün içine ilgili test için istenen resimleri kaydeden bir yapı oluşturdum ve ilgili metodlarda doğru noktalarda bu yapıyı çağırdım.
+
+Screenshot alırken bazı pencerelerin scroll ile kaydırılması gerektiğinden, bu işlem için yardımcı bir metod yazdım. Sayfanın scroll ederek görüntüleri alındığında resmin adına _1_ _2_ _3_ gibi ibarelerle eklenerek resmin yeniden adlandırılması sağlandı.
 
 Testlerin yazımı bittikten sonra magic string den kurtulabilmek adına over-design a kaçmamaya çalışarak gerekli refactoring işlemlerini yaptım. Ve test senaryolarını pytest aracılığı ile çalıştırdım:
 
