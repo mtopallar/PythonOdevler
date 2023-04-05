@@ -16,7 +16,7 @@ import os
 Senaryolar:
 1) Hatalı kullanıcı adı ve parola kombinasyonu ile veya boş bırakılan veri ile giriş yapılamadığını doğrula
 2) Doğru kullanıcı adı ve giriş ile giriş yapılabildiğini doğrula
-3) Sandwich menüden logOut butonunu doğrula
+3) Sandwich menüden logout butonunu doğrula
 4) Flitre öğelerinin çalıştığını doğrula
     -A to Z
     -Z to A
@@ -32,6 +32,14 @@ Senaryolar:
 """
 class Test_Sauce:
 
+    filterMenuXpath = "//*[@id='header_container']/div[2]/div/span/select"
+    cartIconClassName = "shopping_cart_link"
+    checkOutButtonId = "checkout"
+    firstNameInputId = "first-name"
+    lastNameInputId = "last-name"
+    postalCodeInputId = "postal-code"
+    continueButtonId = "continue"
+    
     def setup_method(self):
         testUrl = "https://www.saucedemo.com/"
         userNameInputId = "user-name"
@@ -68,12 +76,16 @@ class Test_Sauce:
        """
        Hatalı kullanıcı adı ve parola kombinasyonu ile giriş yapılamadığını test eden metod.
        """
+       userNameErrorCSSSelector = ".form_group:nth-child(1) > .svg-inline--fa"
+       passwordErrorCSSSelector = ".form_group:nth-child(2) > .svg-inline--fa"
+       errorMessageDivXpath = "//*[@id='login_button_container']/div/form/div[3]"
+
        self.userNameInput.send_keys(username)
        self.passwordInput.send_keys(password)
        self.loginButton.click()
-       userNameError = self.checkElementExistsByLocator(By.CSS_SELECTOR, ".form_group:nth-child(1) > .svg-inline--fa")
-       passwordError = self.checkElementExistsByLocator(By.CSS_SELECTOR, ".form_group:nth-child(2) > .svg-inline--fa")
-       errorMessageDiv = self.getElementByLocator(By.XPATH,"//*[@id='login_button_container']/div/form/div[3]")
+       userNameError = self.checkElementExistsByLocator(By.CSS_SELECTOR, userNameErrorCSSSelector)
+       passwordError = self.checkElementExistsByLocator(By.CSS_SELECTOR, passwordErrorCSSSelector)
+       errorMessageDiv = self.getElementByLocator(By.XPATH,errorMessageDivXpath)
        self.takeAScreenShot("test_invalidLogin",f"usr={username}_psw={password}.png")
        if (userNameError and passwordError) and errorMessageDiv.is_displayed():
            assert True
@@ -87,6 +99,7 @@ class Test_Sauce:
         validUserName = "standard_user"
         validPassword = "secret_sauce"
         expectedUrl = "https://www.saucedemo.com/inventory.html"
+
         self.userNameInput.send_keys(validUserName)
         self.passwordInput.send_keys(validPassword)
         self.loginButton.click()        
@@ -96,13 +109,16 @@ class Test_Sauce:
 
     def test_logOutFromBurgerMenu(self): 
         """
-        Başarılı giriş yapıldıktan sonra sandwich menüdeki LogOut butonu ile çıkış yapılabildiğini test eden metod.
+        Başarılı giriş yapıldıktan sonra sandwich menüdeki Logout butonu ile çıkış yapılabildiğini test eden metod.
         """   
         expectedUrl = "https://www.saucedemo.com/"     
+        sandwichButtonId = "react-burger-menu-btn"
+        logOutLinkId = "logout_sidebar_link"
+
         self.login()
-        sandwichButton = self.getElementByLocator(By.ID,"react-burger-menu-btn")
+        sandwichButton = self.getElementByLocator(By.ID,sandwichButtonId)
         sandwichButton.click()
-        logOutLink = self.getElementByLocator(By.ID,"logout_sidebar_link")
+        logOutLink = self.getElementByLocator(By.ID,logOutLinkId)
         logOutLink.click()
         currentUrl = self.driver.current_url
         self.takeAScreenShot("test_logOutFromBurgerMenu","test_logOutFromBurgerMenu.png")
@@ -112,13 +128,16 @@ class Test_Sauce:
         """
         Ürünleri isme göre A dan Z ye sıralayan flitrenin işlevini test eden metod.
         """
+        filterAToZXPath = "//*[@id='header_container']/div[2]/div/span/select/option[1]"
+        productNameDivsXPath = "//div[@class='inventory_item_name']"
+
         flag = False
         self.login()        
-        filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
-        filterAToZ = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select/option[1]")
+        filterMenu = self.getElementByLocator(By.XPATH,self.filterMenuXpath)
+        filterAToZ = self.getElementByLocator(By.XPATH,filterAToZXPath)
         filterMenu.click()
         filterAToZ.click()
-        productNameDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_name']")
+        productNameDivs = self.getElementsByLocator(By.XPATH,productNameDivsXPath)
         productNameAToZ = self.getProductNameList(productNameDivs)   
         self.takeAScreenShot("test_filterNameAToZ","test_filterNameAToZ.png")            
         if sorted(productNameAToZ):
@@ -131,13 +150,16 @@ class Test_Sauce:
         """
         Ürünleri isme göre Z den A ya sıralayan flitrenin işlevini test eden metod.
         """     
+        filterZToAXPath = "//*[@id='header_container']/div[2]/div/span/select/option[2]"
+        productNameDivsXPath = "//div[@class='inventory_item_name']"
+
         flag = False
         self.login()
-        filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
-        filterZtoA = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select/option[2]")
+        filterMenu = self.getElementByLocator(By.XPATH,self.filterMenuXpath)
+        filterZtoA = self.getElementByLocator(By.XPATH,filterZToAXPath)
         filterMenu.click()
         filterZtoA.click()
-        productNameDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_name']")
+        productNameDivs = self.getElementsByLocator(By.XPATH,productNameDivsXPath)
         productNameZToA = self.getProductNameList(productNameDivs)    
         self.takeAScreenShot("test_filterNameZToA","test_filterNameZToA.png")          
         if sorted(productNameZToA,reverse=True):
@@ -150,13 +172,16 @@ class Test_Sauce:
         """
         Ürünleri fiyatına göre düşükten dan yükseğe sıralayan flitrenin işlevini test eden metod.
         """
+        filterPriceLowToHighXPath = "//*[@id='header_container']/div[2]/div/span/select/option[3]"
+        productPricesDivsXPath = "//div[@class='inventory_item_price']"
+
         flag = False
         self.login()        
-        filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
-        filterPriceLowToHigh = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select/option[3]")
+        filterMenu = self.getElementByLocator(By.XPATH,self.filterMenuXpath)
+        filterPriceLowToHigh = self.getElementByLocator(By.XPATH,filterPriceLowToHighXPath)
         filterMenu.click()
         filterPriceLowToHigh.click()
-        productPricesDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_price']")
+        productPricesDivs = self.getElementsByLocator(By.XPATH,productPricesDivsXPath)
         productPricesSortedToHigher = self.getProductPriceList(productPricesDivs)     
         self.takeAScreenShot("test_filterPriceLowToHigh","test_filterPriceLowToHigh.png")           
         if sorted(productPricesSortedToHigher):
@@ -169,13 +194,16 @@ class Test_Sauce:
         """
         Ürünleri fiyatına göre yüksekten düşüğe sıralayan flitrenin işlevini test eden metod.
         """
+        filterPriceHighToLowXPath = "//*[@id='header_container']/div[2]/div/span/select/option[4]"
+        productPricesDivsXpath = "//div[@class='inventory_item_price']"
+
         flag = False
         self.login()        
-        filterMenu = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select")
-        filterPriceHighToLow = self.getElementByLocator(By.XPATH,"//*[@id='header_container']/div[2]/div/span/select/option[4]")
+        filterMenu = self.getElementByLocator(By.XPATH,self.filterMenuXpath)
+        filterPriceHighToLow = self.getElementByLocator(By.XPATH,filterPriceHighToLowXPath)
         filterMenu.click()
         filterPriceHighToLow.click()
-        productPricesDivs = self.getElementsByLocator(By.XPATH,"//div[@class='inventory_item_price']")
+        productPricesDivs = self.getElementsByLocator(By.XPATH,productPricesDivsXpath)
         productPricesSortedToLower = self.getProductPriceList(productPricesDivs)       
         self.takeAScreenShot("test_filterPriceHighToLow","test_filterPriceHighToLow.png")       
         if sorted(productPricesSortedToLower,reverse=True):
@@ -190,6 +218,7 @@ class Test_Sauce:
         """
         selectRandomProduct = random.randint(0,5)
         expectedUrl = f"https://www.saucedemo.com/inventory-item.html?id={selectRandomProduct}"
+
         self.login()
         productImage = self.getElementByLocator(By.ID,f"item_{selectRandomProduct}_img_link")
         productImage.click()
@@ -214,11 +243,14 @@ class Test_Sauce:
         """
         Rastgele sayıdaki ürün için Add to cart butonu tıklandığında ürünlerin sepete eklendiğini test eden metod.
         """
+        
+        cartItemsListClassName = "cart_item"
+
         self.login()        
         buttonsToClick = len(self.randomClickToAddToCartButton())    
-        cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
+        cartIcon = self.getElementByLocator(By.CLASS_NAME,self.cartIconClassName)
         cartIcon.click()
-        cartItemsList = self.getElementsByLocator(By.CLASS_NAME,"cart_item")
+        cartItemsList = self.getElementsByLocator(By.CLASS_NAME,cartItemsListClassName)
         self.takeAScreenShot("test_addToCartButton","test_addToCartButton.png")
         assert buttonsToClick == len(cartItemsList)   
 
@@ -226,6 +258,8 @@ class Test_Sauce:
         """
         Önceden sepete eklenmiş ürünler için Remove butonuna basıldığında ürünlerin sepetten çıkarıldığını test eden metod.
         """
+        cartItemsListClassName = "cart_item"
+
         self.login()    
         flag = False        
         addButtonsToClick = self.randomClickToAddToCartButton()
@@ -236,11 +270,11 @@ class Test_Sauce:
             else:
                 productRemoveButton = self.getElementByLocator(By.XPATH,f"//*[@id='inventory_container']/div/div[{addButtonsToClick[i-1]}]/div[2]/div[2]/button")    
             productRemoveButton.click()
-        cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
+        cartIcon = self.getElementByLocator(By.CLASS_NAME,self.cartIconClassName)
         cartIcon.click()
-        isCartItemsListExists = self.checkElementExistsByLocator(By.CLASS_NAME,"cart_item")
+        isCartItemsListExists = self.checkElementExistsByLocator(By.CLASS_NAME,cartItemsListClassName)
         if isCartItemsListExists == True:
-            cartItemsList = self.getElementsByLocator(By.CLASS_NAME,"cart_item")        
+            cartItemsList = self.getElementsByLocator(By.CLASS_NAME,cartItemsListClassName)        
         if isCartItemsListExists == False or (isCartItemsListExists == True and len(cartItemsList) == (len(addButtonsToClick) - randomRemove)):
             flag = True 
         self.takeAScreenShot("test_removeButton","test_removeButton.png")       
@@ -261,26 +295,31 @@ class Test_Sauce:
     @pytest.mark.parametrize("firstName,lastName,postalCode",getInvalidCheckoutData())
     def test_checkoutDataMustBeFull(self,firstName,lastName,postalCode):
         """
-        Ürünler sepete eklendikten sonra "Checkout: Your Information" kısmında sistemin istediği kullanıcı bilgilerinin boş geçilemediğini test eden metod. (Ürünler rastgele olarak sisteme eklenmektedir.)
-        """
+        Ürünler sepete eklendikten sonra "Checkout: Your Information" kısmında sistemin istediği kullanıcı bilgilerinin boş geçilemediğini test eden metod. (Ürünler rastgele sayıda sisteme eklenmektedir.)
+        """        
+        firstNameErrorIconCSSSelector = ".form_group:nth-child(1) > .svg-inline--fa"
+        lastNameErrorIconCSSSelector = ".form_group:nth-child(2) > .svg-inline--fa"
+        postalCodeErrorIconCSSSelector = ".form_group:nth-child(3) > .svg-inline--fa"
+        errorDivXPath = "//*[@id='checkout_info_container']/div/form/div[1]/div[4]"
+
         self.login()
         self.randomClickToAddToCartButton()
-        cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
+        cartIcon = self.getElementByLocator(By.CLASS_NAME,self.cartIconClassName)
         cartIcon.click()
-        checkoutButton = self.getElementByLocator(By.ID,"checkout")
+        checkoutButton = self.getElementByLocator(By.ID,self.checkOutButtonId)
         checkoutButton.click()
-        firstNameInput = self.getElementByLocator(By.ID,"first-name")
-        lastNameInput = self.getElementByLocator(By.ID,"last-name")
-        postalCodeInput = self.getElementByLocator(By.ID,"postal-code")
-        continueButton = self.getElementByLocator(By.ID,"continue")
+        firstNameInput = self.getElementByLocator(By.ID,self.firstNameInputId)
+        lastNameInput = self.getElementByLocator(By.ID,self.lastNameInputId)
+        postalCodeInput = self.getElementByLocator(By.ID,self.postalCodeInputId)
+        continueButton = self.getElementByLocator(By.ID,self.continueButtonId)
         firstNameInput.send_keys(firstName)
         lastNameInput.send_keys(lastName)
         postalCodeInput.send_keys(postalCode)
         continueButton.click()
-        firstNameErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,".form_group:nth-child(1) > .svg-inline--fa")
-        lastNameErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,".form_group:nth-child(2) > .svg-inline--fa")
-        postalCodeErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,".form_group:nth-child(3) > .svg-inline--fa")
-        errorDiv = self.getElementByLocator(By.XPATH,"//*[@id='checkout_info_container']/div/form/div[1]/div[4]").is_displayed()
+        firstNameErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,firstNameErrorIconCSSSelector)
+        lastNameErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,lastNameErrorIconCSSSelector)
+        postalCodeErrorIcon = self.checkElementExistsByLocator(By.CSS_SELECTOR,postalCodeErrorIconCSSSelector)
+        errorDiv = self.getElementByLocator(By.XPATH,errorDivXPath).is_displayed()
         self.takeAScreenShot("test_checkoutDataMustBeFull",f"first={firstName}_last={lastName}_postal={postalCode}.png")
         if firstNameErrorIcon and lastNameErrorIcon and postalCodeErrorIcon and errorDiv:
             assert True
@@ -291,27 +330,34 @@ class Test_Sauce:
         """
         Rastgele sayıda sepete eklenen ürünlerin, "Checkout: Overview" ekranında toplam vergi ve vergi dahil fiyat bilgilerinin doğru hesaplandığını test eden metod.
         """
+        getPricesInTheCartClassName = "inventory_item_price"
+        taxClassName = "summary_tax_label"
+        totalClassName = "summary_total_label"
+        firstName = "test"
+        lastName = "test"
+        postalCode = "12345"
+
         totalTaxTrue = False
         totalPriceTrue = False
         expectedPrice = 0
         expectedTax = 0        
         self.login()
         self.randomClickToAddToCartButton()
-        cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
+        cartIcon = self.getElementByLocator(By.CLASS_NAME,self.cartIconClassName)
         cartIcon.click()
-        checkoutButton = self.getElementByLocator(By.ID,"checkout")
+        checkoutButton = self.getElementByLocator(By.ID,self.checkOutButtonId)
         checkoutButton.click()
-        firstNameInput = self.getElementByLocator(By.ID,"first-name")
-        lastNameInput = self.getElementByLocator(By.ID,"last-name")
-        postalCodeInput = self.getElementByLocator(By.ID,"postal-code")
-        continueButton = self.getElementByLocator(By.ID,"continue")
-        firstNameInput.send_keys("test")
-        lastNameInput.send_keys("test")
-        postalCodeInput.send_keys("12345")
+        firstNameInput = self.getElementByLocator(By.ID,self.firstNameInputId)
+        lastNameInput = self.getElementByLocator(By.ID,self.lastNameInputId)
+        postalCodeInput = self.getElementByLocator(By.ID,self.postalCodeInputId)
+        continueButton = self.getElementByLocator(By.ID,self.continueButtonId)
+        firstNameInput.send_keys(firstName)
+        lastNameInput.send_keys(lastName)
+        postalCodeInput.send_keys(postalCode)
         continueButton.click()
-        getPricesInTheCart = self.getElementsByLocator(By.CLASS_NAME,"inventory_item_price")
-        tax = self.getElementByLocator(By.CLASS_NAME,"summary_tax_label").text        
-        total = self.getElementByLocator(By.CLASS_NAME,"summary_total_label").text
+        getPricesInTheCart = self.getElementsByLocator(By.CLASS_NAME,getPricesInTheCartClassName)
+        tax = self.getElementByLocator(By.CLASS_NAME,taxClassName).text        
+        total = self.getElementByLocator(By.CLASS_NAME,totalClassName).text
         getPrices = self.getProductPriceList(getPricesInTheCart)
         for price in getPrices:            
             expectedPrice += price 
@@ -331,24 +377,29 @@ class Test_Sauce:
     
     def test_completeShopping(self):
         """
-        Baştan sona sistemden başarı ile satınalma yapılabildiğini test eden metod. (Sepete eklenen ürünler rastgele seçilmektedir.)
+        Baştan sona sistemden başarı ile satınalma yapılabildiğini test eden metod. (Sepete rastgele sayıda ürün eklenmektedir.)
         """
         expectedAdress = "https://www.saucedemo.com/checkout-complete.html"
+        finishButtonId = "finish"
+        firstName = "kodlama"
+        lastName = "id"
+        postalCode = "12345"
+
         self.login()
         self.randomClickToAddToCartButton()
-        cartIcon = self.getElementByLocator(By.CLASS_NAME,"shopping_cart_link")
+        cartIcon = self.getElementByLocator(By.CLASS_NAME,self.cartIconClassName)
         cartIcon.click()
-        checkoutButton = self.getElementByLocator(By.ID,"checkout")
+        checkoutButton = self.getElementByLocator(By.ID,self.checkOutButtonId)
         checkoutButton.click()
-        firstNameInput = self.getElementByLocator(By.ID,"first-name")
-        lastNameInput = self.getElementByLocator(By.ID,"last-name")
-        postalCodeInput = self.getElementByLocator(By.ID,"postal-code")
-        continueButton = self.getElementByLocator(By.ID,"continue")
-        firstNameInput.send_keys("kodlama")
-        lastNameInput.send_keys("io")
-        postalCodeInput.send_keys("12345")
+        firstNameInput = self.getElementByLocator(By.ID,self.firstNameInputId)
+        lastNameInput = self.getElementByLocator(By.ID,self.lastNameInputId)
+        postalCodeInput = self.getElementByLocator(By.ID,self.postalCodeInputId)
+        continueButton = self.getElementByLocator(By.ID,self.continueButtonId)
+        firstNameInput.send_keys(firstName)
+        lastNameInput.send_keys(lastName)
+        postalCodeInput.send_keys(postalCode)
         continueButton.click()
-        finishButton = self.getElementByLocator(By.ID,"finish")
+        finishButton = self.getElementByLocator(By.ID,finishButtonId)
         finishButton.click()
         currentAdress = self.driver.current_url
         self.takeAScreenShot("test_completeShopping","test_completeShopping.png")
@@ -418,4 +469,5 @@ class Test_Sauce:
     def takeAScreenShot(self,methodName,imageName):
         methodsPath = self.createMethodsScreenshotFolder(methodName)
         self.driver.save_screenshot(f"{methodsPath}/{imageName}")
+
     
