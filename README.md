@@ -1,4 +1,6 @@
 # Python Ödevler
+
+## 5.Gün Ödevleri
 ### Pytest'de Anotasyonlar (Decoratörler)
 Anotasyonlar birçok yazılım dilinde mevcuttur ve üzerlerine yazıldıkları nesneye çeşitli özellikler kazandırmak, onlara nitelik katmak için kullanılırlar. Pytest içerisinde bulunan mark modülü içinde kullanabileceğimiz bazı hazır anotasyonlar mevcuttur. Bunlar:
 
@@ -68,3 +70,49 @@ Custom marks ise kendi anotasyonlarımızı oluşturup kullanmak istediğimizde 
 
 ### 5.Gün Testing Area Görseli
 ![](https://github.com/mtopallar/PythonOdevler/blob/master/BesinciGun/Odev2/testing_area.jpg)
+
+## 6.Gün Ödevleri
+
+### Ödev 1
+Daha önceki ödevlerde VS Code ile yazdığımız test senaryolarını Selenium IDE ile tekrar gerçekleştirip, kodları IDE'den export ederek yine VS Code ortamında inceledik. Kod yazarak yaptığımız ancak IDE ortamında nasıl yapılacağını bilmediğim konuları incelerken yeni yöntemler öğrendim.
+
+![](https://github.com/mtopallar/PythonOdevler/blob/master/AltinciGun/Odev1/altinciGun_1.odev.jpg)
+
+### Ödev 2
+
+> Testlerimizi gerçekleştirdiğimiz "https://www.saucedemo.com/" sitesinde, kendi belirlediğiniz tüm aksiyonları test edecek bir proje geliştiriniz. Bu projeyi geliştirirken Selenium IDE kullanabilir, testlerinizi buradan export edip refactor edebilirsiniz. Bu projeyi tamamlarken derste kullandığımız yaklaşımlara uymaya dikkat ediniz.
+
+Bu ödevde selenium IDE kullanmadım. Kodları VS Code ile kendim yazmayı tercih ettim. Belirlediğim senaryolar şu şekilde oldu:
+
+Senaryolar:
+1. Hatalı kullanıcı adı ve parola kombinasyonu ile veya boş bırakılan veri ile giriş yapılamadığını doğrula
+2. Doğru kullanıcı adı ve giriş ile giriş yapılabildiğini doğrula
+3. Sandwich menüden logout butonunu doğrula
+4. Flitre öğelerinin çalıştığını doğrula
+    - A to Z
+    - Z to A
+    - low to high
+    - high to low
+5. Her bir öğenin resmine tıklandığında detay sayfasına gittiğini doğrula
+6. Her bir öğenin başlığına tıklandığıda detay sayfasına gittiğini doğrula
+7. Add to cart butonunun çalışmasını doğrula
+8. Remove butonunun çalışmasını doğrula
+9. Checkout işlemi öncesi information kısmının boş geçilemediğini doğrula
+10. Toplam verginin ve vergi dahil fiyatın doğru hesaplandığını doğrula
+11. Baştan sonra bir alışverişin tamamlandığını doğrula
+
+Belirlediğim senaryolara göre testlerimi yazdım, gerekli helper metodlarımı oluşturdum, karşılaştığım bazı klasör hatalarının çözümlerinin nasıl olabileceğini araştırıp çözüme kavuşturdum. openpyxl gibi paketlerle çalışırken pytest bazen kendi çalışma lokasyonundan ötürü "./data" gibi kısa adres belirlemelerinde yol doğru olsa da klasörü görmediğini ifade edebiliyor. Bu sorunu klasör adını "./data" gibi kısa şekilde belirtmek yerine tam adres olarak verdiğimizde aşabiliyoruz ancak, bu sürdürülebilir bir yapı değil. Öyle ki bu repositorydeki kodları bir başka bilgisayarda çalıştırmak için adres kısmının her bilgisayara göre yeniden düzenlenmesi gerekir. Bunun önüne geçebilmek için klasör lokasyonunun otomatik bir şekilde yakalanması gerekir. Bunu sağlamak için;
+
+```python
+    import pathlib
+    import os
+    path = pathlib.Path(__file__).parent.resolve()    
+    os.chdir(f"{path}")
+```
+paketlerini ve yöntemini kullandım. Buradaki path değişkeni projenin klasör hiyerarşisine göre düzenlenmelidir. Bu yöntem ile pytest in bakması gerektiği yol belirtilmiş oluyor. Farklı yöntemler de mutlaka ki mevcuttur ancak ben bu yöntemi tercih ettim. Detaylı kullanım için ilgili repositorydeki kodlarımı inceleyebilirsiniz.
+
+Testlerin hepsi için ekran görüntüsü alma işlevini ekledim. Daha kontrol edilebilir bir yapı için önce o testin çalıştırıldığı günün tarihini gg-aa-yyyy şeklinde formatlayıp bunu isim olarak kullanan bir klasör oluşturduktan sonra, bu klasörün içine her metod için ilgili metod ismini isim olarak kullanan ikinci bir klasörü oluşturan ve bu ikinci klasörün içine ilgili test için istenen resimleri kaydeden bir yapı oluşturdum ve ilgili metodlarda doğru noktalarda bu yapıyı çağırdım. 
+
+Testlerin yazımı bittikten sonra magic string den kurtulabilmek adına over-design a kaçmamaya çalışarak gerekli refactoring işlemlerini yaptım. Ve test senaryolarını pytest aracılığı ile çalıştırdım:
+
+![](https://github.com/mtopallar/PythonOdevler/blob/master/AltinciGun/Odev2/altinciGun_2.odev.jpg)
